@@ -1,0 +1,10 @@
+# Login shells only (zsh reads this before .zshrc).
+{{- if eq .chezmoi.os "linux" }}{{ if eq .chezmoi.osRelease.id "ubuntu" }}
+
+# Ubuntu Server laptop: no display manager, so logging in on tty1 starts sway.
+# No exec: if sway exits or crashes, you drop back to this zsh instead of a login loop.
+# tty2 (Ctrl+Alt+F2) stays a plain console.
+if [ -z "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ] && [ "$(tty)" = /dev/tty1 ] && command -v sway >/dev/null 2>&1; then
+  sway
+fi
+{{- end }}{{ end }}

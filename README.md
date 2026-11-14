@@ -4,7 +4,7 @@ Personal dev environment, managed with [chezmoi](https://chezmoi.io), for:
 
 - **Fedora Sway** desktop
 - **macOS** laptop
-- **Ubuntu Server 26.04** laptop (no desktop): same dev tools; alacritty runs fullscreen from tty1 via `cage`
+- **Ubuntu Server 26.04** laptop: same dev tools plus a minimal sway (waybar, alacritty, qutebrowser), started from tty1
 
 ## New machine
 
@@ -35,15 +35,15 @@ The repo is private, so log in with gh first, then let chezmoi clone and apply.
 
 chezmoi asks once for:
 
-- **profile**: `desktop` (alacritty and Nerd Font; sway/rofi configs only where sway is installed; on Ubuntu Server also cage) or `headless` (CLI only, for SSH-only servers). Pick `desktop` on the Ubuntu Server laptop.
+- **profile**: `desktop` (alacritty, Nerd Font, sway/rofi configs on Linux; on Ubuntu also the sway packages and qutebrowser) or `headless` (CLI only, for SSH-only servers). The guess is `headless` when no display is running, so type `d` on the Ubuntu Server laptop.
 - git name, email, signing key (empty for none)
 - macOS only: apply keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space)
 
 Answers live in `~/.config/chezmoi/chezmoi.toml`, never in the repo.
 
 Then open a new terminal (or log out and in) for zsh and the new PATH.
-On the Ubuntu Server laptop, log out and log in on tty1: `~/.zprofile` starts alacritty in cage.
-When alacritty exits you are back in plain zsh; tty2 (Ctrl+Alt+F2) is always a plain console.
+On the Ubuntu Server laptop, log out and log in on tty1: `~/.zprofile` starts sway.
+When sway exits you are back in plain zsh; tty2 (Ctrl+Alt+F2) is always a plain console.
 
 Without sudo: `DOTFILES_NO_SUDO=1`. Skip Homebrew: `DOTFILES_NO_BREW=1` (CLI tools from dnf/apt instead; no lazygit or herdr).
 

@@ -9,10 +9,18 @@ podman
 podman-compose
 podman-docker
 
-# No desktop on Ubuntu Server: cage runs alacritty fullscreen from tty1 (see ~/.zprofile).
-alacritty           [desktop]
-cage                [desktop]
+# Minimal sway desktop on Ubuntu Server, started from tty1 (see ~/.zprofile).
+# Same stack as the Fedora Sway spin, minus audio.
+sway                [desktop]
+swaybg              [desktop]
+swayidle            [desktop]
+swaylock            [desktop]
+waybar              [desktop]
+rofi                [desktop]
+brightnessctl       [desktop]
 wl-clipboard        [desktop]
+alacritty           [desktop]
+qutebrowser         [desktop]
 
 # Fallback CLI when brew is missing. lazygit and herdr have no apt package.
 # fd installs as "fdfind" (symlinked to ~/.local/bin/fd).
