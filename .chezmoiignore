@@ -4,6 +4,9 @@ bootstrap.sh
 test.sh
 packages/
 
+# Managed by Claude itself (claude.ai synced skills).
+.claude/skills/synced
+
 # Desktop-only configs.
 {{ if ne .profile "desktop" }}
 .config/alacritty
