@@ -1,0 +1,55 @@
+# Monokai Pro Ristretto (ported from ghostty config)
+# Colors come from .chezmoidata/palette.toml in the dotfiles repo.
+
+[font]
+size = {{ if eq .chezmoi.os "darwin" }}14{{ else }}10{{ end }}
+normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
+
+[colors.primary]
+background = "{{ .palette.background }}"
+foreground = "{{ .palette.foreground }}"
+
+[colors.cursor]
+text = "{{ .palette.background }}"
+cursor = "{{ .palette.cursor }}"
+
+[colors.selection]
+background = "{{ .palette.selection }}"
+text = "{{ .palette.foreground }}"
+
+[colors.normal]
+black = "{{ .palette.background }}"
+red = "{{ .palette.red }}"
+green = "{{ .palette.green }}"
+yellow = "{{ .palette.yellow }}"
+blue = "{{ .palette.orange }}"
+magenta = "{{ .palette.purple }}"
+cyan = "{{ .palette.cyan }}"
+white = "{{ .palette.foreground }}"
+
+[colors.bright]
+black = "{{ .palette.dimmed }}"
+red = "{{ .palette.red }}"
+green = "{{ .palette.green }}"
+yellow = "{{ .palette.yellow }}"
+blue = "{{ .palette.orange }}"
+magenta = "{{ .palette.purple }}"
+cyan = "{{ .palette.cyan }}"
+white = "{{ .palette.foreground }}"
+{{- if eq .chezmoi.os "darwin" }}
+
+# macOS: Option acts as Alt/Meta, same as Alt on Linux (zsh, tmux, nvim, herdr)
+[window]
+option_as_alt = "Both"
+
+# macOS: same Ctrl+Shift copy/paste as Linux (Alacritty's Linux default); Cmd+C/V still work
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "V"
+mods = "Control|Shift"
+action = "Paste"
+{{- end }}
