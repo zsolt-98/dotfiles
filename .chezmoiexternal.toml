@@ -1,0 +1,31 @@
+# Third-party repos cloned on first apply, pulled at most once a week after that.
+# Force an immediate refresh with: chezmoi apply --refresh-externals
+
+[".oh-my-zsh"]
+    type = "git-repo"
+    url = "https://github.com/ohmyzsh/ohmyzsh.git"
+    refreshPeriod = "168h"
+    [".oh-my-zsh".pull]
+        args = ["--ff-only"]
+
+[".oh-my-zsh/custom/plugins/zsh-vi-mode"]
+    type = "git-repo"
+    url = "https://github.com/jeffreytse/zsh-vi-mode.git"
+    refreshPeriod = "168h"
+    [".oh-my-zsh/custom/plugins/zsh-vi-mode".pull]
+        args = ["--ff-only"]
+
+[".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+    type = "git-repo"
+    url = "https://github.com/zsh-users/zsh-autosuggestions.git"
+    refreshPeriod = "168h"
+    [".oh-my-zsh/custom/plugins/zsh-autosuggestions".pull]
+        args = ["--ff-only"]
+
+# tpm itself; tpm installs resurrect + continuum from .tmux.conf (prefix + I).
+[".tmux/plugins/tpm"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tpm.git"
+    refreshPeriod = "168h"
+    [".tmux/plugins/tpm".pull]
+        args = ["--ff-only"]

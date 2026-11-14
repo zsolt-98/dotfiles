@@ -1,0 +1,16 @@
+# Repo-only files: never copied into $HOME.
+README.md
+bootstrap.sh
+test.sh
+packages/
+
+# Desktop-only configs.
+{{ if ne .profile "desktop" }}
+.config/alacritty
+{{ end }}
+
+# Sway stack: Linux desktop with sway installed only.
+{{ if or (ne .chezmoi.os "linux") (ne .profile "desktop") (not (lookPath "sway")) }}
+.config/sway
+.config/rofi
+{{ end }}

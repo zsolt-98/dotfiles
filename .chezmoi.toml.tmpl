@@ -1,0 +1,35 @@
+{{- /* Runs on `chezmoi init`. Answers are stored in ~/.config/chezmoi/chezmoi.toml, never in the repo. */ -}}
+
+{{- /* Profile: guess desktop when a display exists (or on macOS), headless over SSH. */ -}}
+{{- $profileGuess := "headless" -}}
+{{- if or (eq .chezmoi.os "darwin") (env "DISPLAY") (env "WAYLAND_DISPLAY") -}}
+{{-   $profileGuess = "desktop" -}}
+{{- end -}}
+{{- if env "SSH_CONNECTION" -}}
+{{-   $profileGuess = "headless" -}}
+{{- end -}}
+{{- $profile := promptChoiceOnce . "profile" "Profile" (list "desktop" "headless") $profileGuess -}}
+
+{{- $name := promptStringOnce . "name" "Git name" -}}
+{{- $email := promptStringOnce . "email" "Git email" -}}
+{{- $signingkey := promptStringOnce . "signingkey" "Git signing key (leave empty for none)" "" -}}
+
+{{- /* Homebrew prefix differs per OS/arch; templates use it instead of hardcoded paths. */ -}}
+{{- $brewprefix := "/home/linuxbrew/.linuxbrew" -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $brewprefix = "/opt/homebrew" -}}
+{{-   if eq .chezmoi.arch "amd64" -}}
+{{-     $brewprefix = "/usr/local" -}}
+{{-   end -}}
+{{- end -}}
+
+[data]
+    profile = {{ $profile | quote }}
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    signingkey = {{ $signingkey | quote }}
+    brewprefix = {{ $brewprefix | quote }}
+
+[git]
+    autoCommit = true
+    autoPush = false
