@@ -1,0 +1,50 @@
+#!/bin/sh
+# Build toolchain and Homebrew. Runs before dotfiles are written; re-runs only when this script changes.
+# Env: DOTFILES_NO_SUDO=1 skips sudo, DOTFILES_NO_BREW=1 skips Homebrew (dnf/apt fallback then).
+{{ template "lib.sh" . }}
+
+detect_sudo
+
+{{ if eq .chezmoi.os "darwin" -}}
+# Xcode Command Line Tools: compilers, git, make. The installer is a GUI dialog; wait for it.
+if ! xcode-select -p >/dev/null 2>&1; then
+  log "Installing Xcode Command Line Tools (finish the dialog)"
+  xcode-select --install || true
+  until xcode-select -p >/dev/null 2>&1; do sleep 5; done
+fi
+{{- else -}}
+# C toolchain plus what the Homebrew installer needs (curl, file, git, procps) and xz for font archives.
+detect_pm
+if [ "$CAN_SUDO" = 1 ]; then
+  case $PM in
+    dnf)
+      log "Installing build toolchain (dnf)"
+      $SUDO dnf install -y @development-tools procps-ng curl file git tar xz
+      ;;
+    apt)
+      log "Installing build toolchain (apt)"
+      $SUDO apt-get update
+      pm_install build-essential procps curl file git ca-certificates xz-utils
+      ;;
+    *)
+      warn "Unknown package manager: install a C toolchain, curl and git yourself"
+      ;;
+  esac
+else
+  warn "No sudo: skipping build toolchain"
+fi
+{{- end }}
+
+# Homebrew. On Linux it needs sudo once to create /home/linuxbrew, and it refuses to run as root.
+if [ -x "$BREW" ]; then
+  log "Homebrew already installed"
+elif [ "${DOTFILES_NO_BREW:-0}" = 1 ]; then
+  warn "DOTFILES_NO_BREW=1: skipping Homebrew"
+elif [ "$(id -u)" -eq 0 ]; then
+  warn "Running as root: Homebrew refuses root, skipping (dnf/apt fallback)"
+elif [ "$CAN_SUDO" = 0 ]; then
+  warn "No sudo: skipping Homebrew (dnf/apt fallback)"
+else
+  log "Installing Homebrew"
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi

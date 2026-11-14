@@ -14,6 +14,12 @@
 {{- $email := promptStringOnce . "email" "Git email" -}}
 {{- $signingkey := promptStringOnce . "signingkey" "Git signing key (leave empty for none)" "" -}}
 
+{{- /* macOS only: opt-in keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space). */ -}}
+{{- $macosDefaults := false -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $macosDefaults = promptBoolOnce . "macos_defaults" "Apply macOS keyboard defaults" true -}}
+{{- end -}}
+
 {{- /* Homebrew prefix differs per OS/arch; templates use it instead of hardcoded paths. */ -}}
 {{- $brewprefix := "/home/linuxbrew/.linuxbrew" -}}
 {{- if eq .chezmoi.os "darwin" -}}
@@ -29,6 +35,7 @@
     email = {{ $email | quote }}
     signingkey = {{ $signingkey | quote }}
     brewprefix = {{ $brewprefix | quote }}
+    macos_defaults = {{ $macosDefaults }}
 
 [git]
     autoCommit = true

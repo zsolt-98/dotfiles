@@ -1,0 +1,38 @@
+#!/bin/sh
+# Make zsh the login shell. Uses the system zsh (listed in /etc/shells), not brew's.
+# Never fails the apply: on error it prints the command to run by hand.
+{{ template "lib.sh" . }}
+
+user=$(id -un)
+zsh_path=""
+for p in /bin/zsh /usr/bin/zsh; do
+  if [ -x "$p" ]; then zsh_path=$p; break; fi
+done
+if [ -z "$zsh_path" ]; then
+  warn "System zsh not found: skipping chsh"
+  exit 0
+fi
+
+{{ if eq .chezmoi.os "darwin" -}}
+current=$(dscl . -read "/Users/$user" UserShell | awk '{print $2}')
+{{- else -}}
+current=$(getent passwd "$user" | cut -d: -f7)
+{{- end }}
+
+case $current in
+  */zsh)
+    log "Login shell is already zsh"
+    exit 0
+    ;;
+esac
+
+log "Changing login shell to $zsh_path"
+{{ if eq .chezmoi.os "linux" -}}
+# usermod via sudo avoids chsh's password prompt (and works where chsh isn't installed).
+detect_sudo
+if [ "$CAN_SUDO" = 1 ] && have usermod; then
+  $SUDO usermod -s "$zsh_path" "$user" || warn "usermod failed. Run: chsh -s $zsh_path"
+  exit 0
+fi
+{{ end -}}
+chsh -s "$zsh_path" || warn "chsh failed. Run: chsh -s $zsh_path"

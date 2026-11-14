@@ -1,0 +1,13 @@
+#!/bin/sh
+# Install the global runtimes from ~/.config/mise/config.toml. Re-runs when that file changes:
+#   {{ include "dot_config/mise/config.toml" | sha256sum }}
+{{ template "lib.sh" . }}
+
+load_brew
+if ! have mise; then
+  warn "mise not found: skipping runtimes"
+  exit 0
+fi
+
+log "mise install (node lts, pnpm, python)"
+mise install --yes

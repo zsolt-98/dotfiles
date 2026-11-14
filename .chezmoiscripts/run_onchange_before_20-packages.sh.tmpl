@@ -1,0 +1,62 @@
+#!/bin/sh
+# System packages (packages/dnf.txt or packages/apt.txt) and the shared packages/Brewfile.
+# Re-runs when a list changes (hashes below) or the profile changes:
+#   Brewfile {{ include "packages/Brewfile" | sha256sum }}
+#   dnf.txt  {{ include "packages/dnf.txt" | sha256sum }}
+#   apt.txt  {{ include "packages/apt.txt" | sha256sum }}
+{{ template "lib.sh" . }}
+
+load_brew
+NOBREW=1
+if have brew; then NOBREW=0; fi
+
+{{ if eq .chezmoi.os "linux" -}}
+detect_sudo
+detect_pm
+if [ "$CAN_SUDO" = 1 ] && [ -n "$PM" ]; then
+  pkgs=$(read_pkgs "$SOURCE_DIR/packages/$PM.txt" "$NOBREW")
+  log "Installing $PM packages:" $pkgs
+  if [ "$PM" = apt ]; then $SUDO apt-get update; fi
+  # shellcheck disable=SC2086
+  pm_install $pkgs
+else
+  warn "No sudo or unknown package manager: skipping system packages"
+fi
+
+# Debian/Ubuntu ship fd as "fdfind".
+if ! have fd && have fdfind; then
+  mkdir -p "$HOME/.local/bin"
+  ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+fi
+{{- end }}
+
+if [ "$NOBREW" = 0 ]; then
+  log "brew bundle"
+  DOTFILES_PROFILE="$PROFILE" brew bundle install --no-upgrade --file="$SOURCE_DIR/packages/Brewfile"
+else
+  # Without brew: mise from its official installer (~/.local/bin/mise). lazygit and herdr stay missing.
+  if ! have mise; then
+    log "Installing mise (no brew)"
+    curl -fsSL https://mise.run | sh
+  fi
+  warn "No brew: lazygit and herdr are not installed"
+fi
+
+{{ if eq .chezmoi.os "darwin" -}}
+# podman on macOS runs containers in a Linux VM. Create it once; start it with `podman machine start`.
+if have podman && ! podman machine inspect >/dev/null 2>&1; then
+  log "Creating podman machine"
+  podman machine init
+fi
+{{- end }}
+
+{{ if and (eq .chezmoi.os "linux") (eq .profile "desktop") -}}
+# JetBrainsMono Nerd Font (macOS gets it as a cask). Fonts render client-side, so headless skips it.
+if ! fc-list 2>/dev/null | grep -q "JetBrainsMono Nerd Font"; then
+  log "Installing JetBrainsMono Nerd Font"
+  dir="$HOME/.local/share/fonts/JetBrainsMonoNerd"
+  mkdir -p "$dir"
+  curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz | tar -xJ -C "$dir"
+  fc-cache -f "$dir"
+fi
+{{- end }}

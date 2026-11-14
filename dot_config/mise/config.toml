@@ -1,0 +1,6 @@
+# Global runtimes, installed by .chezmoiscripts/run_onchange_after_30-mise.sh.tmpl.
+# "lts" follows the current Node LTS line. Projects override with their own mise.toml.
+[tools]
+node = "lts"
+pnpm = "latest"
+python = "3.13"

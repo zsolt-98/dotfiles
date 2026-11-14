@@ -1,0 +1,28 @@
+{{- if and (eq .chezmoi.os "darwin") .macos_defaults -}}
+#!/bin/sh
+# Minimal macOS defaults for key parity with Linux (tmux, nvim, herdr use Ctrl+arrows and Ctrl+Space).
+# Opt-in: the macos_defaults prompt in .chezmoi.toml.tmpl. Re-runs when this script changes.
+{{ template "lib.sh" . }}
+
+log "Keyboard: fast key repeat, no press-and-hold accent popup (vim hjkl repeats)"
+defaults write -g KeyRepeat -int 2
+defaults write -g InitialKeyRepeat -int 15
+defaults write -g ApplePressAndHoldEnabled -bool false
+
+# Symbolic hotkey IDs:
+#   32, 34  Mission Control (Ctrl+Up)
+#   33, 35  Application windows (Ctrl+Down)
+#   79, 80  Move left a space (Ctrl+Left)
+#   81, 82  Move right a space (Ctrl+Right)
+#   60      Select previous input source (Ctrl+Space)
+#   61      Select next input source (Ctrl+Option+Space)
+log "Disabling Ctrl+arrow and Ctrl+Space system shortcuts"
+for id in 32 33 34 35 79 80 81 82 60 61; do
+  defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys \
+    -dict-add "$id" "<dict><key>enabled</key><false/></dict>"
+done
+
+# Apply hotkey changes without logging out.
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u || true
+log "Done. Key repeat applies after logout."
+{{- end }}
