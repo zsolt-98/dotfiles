@@ -1,0 +1,56 @@
+onboarding = false
+
+[theme]
+name = "vesper"
+auto_switch = false
+
+# Monokai Pro Ristretto, matched to ~/.config/alacritty/alacritty.toml
+[theme.custom]
+accent = "#f9cc6c"
+sidebar_bg = "#211c1c"
+active_row_bg = "#403838"
+selection_bg = "#5b5353"
+surface_dim = "#191515"
+mauve = "#a8a9eb"
+green = "#adda78"
+yellow = "#f9cc6c"
+red = "#fd6883"
+peach = "#f38d70"
+
+# tmux-style keybindings, matched to ~/.tmux.conf (tmux defaults + vim hjkl panes).
+# Bindings not listed here keep herdr defaults.
+[keys]
+prefix = "ctrl+b"
+detach = "prefix+d"                    # tmux: detach-client
+new_tab = "prefix+c"                   # tmux: new-window
+rename_tab = "prefix+,"                # tmux: rename-window
+close_tab = "prefix+&"                 # tmux: kill-window
+next_tab = "prefix+n"
+previous_tab = "prefix+p"
+switch_tab = "prefix+1..9"             # matches base-index 1
+split_vertical = "prefix+%"            # tmux: split-window -h (side by side)
+split_horizontal = "prefix+double_quote" # tmux: split-window -v (stacked); "quote" means ' in herdr
+close_pane = "prefix+x"                # tmux: kill-pane
+zoom = "prefix+z"
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+cycle_pane_next = "prefix+o"           # tmux: select-pane -t :.+
+last_pane = "prefix+;"                 # tmux: last-pane
+open_notification_target = "prefix+shift+o" # moved off prefix+o
+copy_mode = "prefix+["                 # tmux: copy-mode
+rename_workspace = "prefix+$"          # tmux: rename-session
+previous_workspace = "prefix+("        # tmux: switch-client -p
+next_workspace = "prefix+)"            # tmux: switch-client -n
+workspace_picker = "prefix+w"          # tmux: choose-tree
+# Inside prefix+w navigate mode: j/k and up/down arrows move between workspaces.
+# Pane up/down moves to J/K so it doesn't clash; h/l and left/right arrows still move panes.
+navigate_workspace_up = ["k", "up"]
+navigate_workspace_down = ["j", "down"]
+navigate_pane_up = "shift+k"
+navigate_pane_down = "shift+j"
+resize_pane_left = "prefix+ctrl+left"  # tmux: resize-pane -L
+resize_pane_down = "prefix+ctrl+down"
+resize_pane_up = "prefix+ctrl+up"
+resize_pane_right = "prefix+ctrl+right"

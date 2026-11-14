@@ -1,0 +1,42 @@
+# Keep default prefix (Ctrl+b)
+# M1 sends Ctrl+b
+
+# Enable mouse/touch support (tap panes to select, scroll history)
+set -g mouse on
+
+# Status bar at top
+set -g status-position top
+
+# Vim keys in copy mode
+setw -g mode-keys vi
+
+# Move between panes with vim keys (arrows still work by default)
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Open new splits and windows in the current pane's directory (default keys)
+bind '"' split-window -v -c "#{pane_current_path}"
+bind % split-window -h -c "#{pane_current_path}"
+bind c new-window -c "#{pane_current_path}"
+
+# 1-based indexing AND auto-renumbering on tab close
+set -g base-index 1
+setw -g pane-base-index 1
+set -g renumber-windows on
+
+# Save/restore sessions across reboots (prefix+Ctrl-s save, prefix+Ctrl-r restore)
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+set -g @continuum-restore 'on'
+set -g @continuum-save-interval '15'
+set -g @resurrect-capture-pane-contents 'on'
+
+# Relaunch Claude panes on restore with the conversation picker (pick the right one per pane)
+set -g @resurrect-processes 'lazygit "~claude->claude --resume"'
+
+# Keep this line last
+run '~/.tmux/plugins/tpm/tpm'
