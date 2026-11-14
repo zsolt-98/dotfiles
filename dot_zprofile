@@ -1,0 +1,10 @@
+# Login shells only (zsh reads this before .zshrc).
+
+# Ubuntu Server laptop: no desktop, so on tty1 start alacritty fullscreen inside cage
+# (a single-app Wayland compositor). Truecolor and Nerd Font icons work there, unlike the raw console.
+# No exec: if alacritty or cage exits/crashes, you drop back to this zsh instead of a login loop.
+# tty2 (Ctrl+Alt+F2) stays a plain console. No-op on Fedora/macOS (cage not installed).
+if [ -z "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ] && [ "$(tty)" = /dev/tty1 ] &&
+   command -v cage >/dev/null 2>&1 && command -v alacritty >/dev/null 2>&1; then
+  cage -- alacritty
+fi

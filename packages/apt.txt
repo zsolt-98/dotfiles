@@ -1,4 +1,4 @@
-# Debian / Ubuntu / Mint packages. One per line; "#" starts a comment.
+# Ubuntu Server packages (apt). One per line; "#" starts a comment.
 # Tags after the name:
 #   [desktop]  only on the desktop profile
 #   [nobrew]   only when Homebrew is missing (fallback for the Brewfile CLI tools)
@@ -9,10 +9,13 @@ podman
 podman-compose
 podman-docker
 
+# No desktop on Ubuntu Server: cage runs alacritty fullscreen from tty1 (see ~/.zprofile).
 alacritty           [desktop]
+cage                [desktop]
+wl-clipboard        [desktop]
 
-# Fallback CLI when brew is missing. Debian's neovim may be too old for LazyVim (needs 0.11+).
-# lazygit and herdr have no apt package on older releases; fd installs as "fdfind" (symlinked to ~/.local/bin/fd).
+# Fallback CLI when brew is missing. lazygit and herdr have no apt package.
+# fd installs as "fdfind" (symlinked to ~/.local/bin/fd).
 git                 [nobrew]
 neovim              [nobrew]
 tmux                [nobrew]

@@ -2,30 +2,29 @@
 # Test a headless install from this local source dir in throwaway podman containers.
 # Runs as a non-root user with passwordless sudo (Homebrew refuses root), then checks the tools.
 #
-#   ./test.sh                  fedora, debian and mint
-#   ./test.sh debian           one distro
-#   ./test.sh --no-brew mint   dnf/apt fallback only (DOTFILES_NO_BREW=1)
+#   ./test.sh                    fedora and ubuntu
+#   ./test.sh ubuntu             one distro
+#   ./test.sh --no-brew ubuntu   dnf/apt fallback only (DOTFILES_NO_BREW=1)
 #
-# Images can be overridden: FEDORA_IMAGE, DEBIAN_IMAGE, MINT_IMAGE.
+# Images can be overridden: FEDORA_IMAGE, UBUNTU_IMAGE.
 # Logs go to $TEST_LOGS (default /tmp/dotfiles-test-logs), outside the repo.
 set -eu
 
 SRC=$(cd "$(dirname "$0")" && pwd)
 LOGS=${TEST_LOGS:-${TMPDIR:-/tmp}/dotfiles-test-logs}
 FEDORA_IMAGE=${FEDORA_IMAGE:-registry.fedoraproject.org/fedora:44}
-DEBIAN_IMAGE=${DEBIAN_IMAGE:-docker.io/library/debian:13}
-MINT_IMAGE=${MINT_IMAGE:-docker.io/linuxmintd/mint22-amd64}
+UBUNTU_IMAGE=${UBUNTU_IMAGE:-docker.io/library/ubuntu:26.04}
 
 NO_BREW=0
 distros=""
 for arg in "$@"; do
   case $arg in
     --no-brew) NO_BREW=1 ;;
-    fedora|debian|mint) distros="$distros $arg" ;;
+    fedora|ubuntu) distros="$distros $arg" ;;
     *) echo "unknown argument: $arg" >&2; exit 2 ;;
   esac
 done
-[ -n "$distros" ] || distros="fedora debian mint"
+[ -n "$distros" ] || distros="fedora ubuntu"
 mkdir -p "$LOGS"
 
 # Root part: sudo, curl, a test user with passwordless sudo.
@@ -79,8 +78,7 @@ summary=""
 for d in $distros; do
   case $d in
     fedora) image=$FEDORA_IMAGE ;;
-    debian) image=$DEBIAN_IMAGE ;;
-    mint) image=$MINT_IMAGE ;;
+    ubuntu) image=$UBUNTU_IMAGE ;;
   esac
   name="dotfiles-test-$d"
   log="$LOGS/$d.log"
