@@ -5,17 +5,18 @@ name = "vesper"
 auto_switch = false
 
 # Monokai Pro Ristretto, matched to ~/.config/alacritty/alacritty.toml
+# Values come from .chezmoidata/palette.toml in the dotfiles repo.
 [theme.custom]
-accent = "#f9cc6c"
-sidebar_bg = "#211c1c"
-active_row_bg = "#403838"
-selection_bg = "#5b5353"
-surface_dim = "#191515"
-mauve = "#a8a9eb"
-green = "#adda78"
-yellow = "#f9cc6c"
-red = "#fd6883"
-peach = "#f38d70"
+accent = "{{ .palette.yellow }}"
+sidebar_bg = "{{ .palette.sidebar_bg }}"
+active_row_bg = "{{ .palette.active_row_bg }}"
+selection_bg = "{{ .palette.selection }}"
+surface_dim = "{{ .palette.surface_dim }}"
+mauve = "{{ .palette.purple }}"
+green = "{{ .palette.green }}"
+yellow = "{{ .palette.yellow }}"
+red = "{{ .palette.red }}"
+peach = "{{ .palette.orange }}"
 
 # tmux-style keybindings, matched to ~/.tmux.conf (tmux defaults + vim hjkl panes).
 # Bindings not listed here keep herdr defaults.

@@ -7,6 +7,24 @@ set -g mouse on
 # Status bar at top
 set -g status-position top
 
+# Monokai Pro Ristretto (values from .chezmoidata/palette.toml in the dotfiles repo)
+set -g status-style "bg={{ .palette.sidebar_bg }},fg={{ .palette.foreground }}"
+set -g status-left "#[bg={{ .palette.yellow }},fg={{ .palette.background }},bold] #S #[default] "
+set -g status-right "#[fg={{ .palette.dimmed }}]%H:%M "
+set -g window-status-format " #I:#W "
+set -g window-status-current-format " #I:#W "
+set -g window-status-style "fg={{ .palette.dimmed }}"
+set -g window-status-current-style "bg={{ .palette.active_row_bg }},fg={{ .palette.yellow }},bold"
+set -g pane-border-style "fg={{ .palette.selection }}"
+set -g pane-active-border-style "fg={{ .palette.yellow }}"
+set -g message-style "bg={{ .palette.selection }},fg={{ .palette.foreground }}"
+set -g mode-style "bg={{ .palette.selection }},fg={{ .palette.foreground }}"
+
+# Pass Ctrl+Shift and other modified keys through to nvim/herdr (Alacritty supports it)
+set -s extended-keys on
+set -as terminal-features 'xterm*:extkeys'
+set -as terminal-features 'alacritty*:extkeys'
+
 # Vim keys in copy mode
 setw -g mode-keys vi
 
