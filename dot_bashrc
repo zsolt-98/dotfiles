@@ -1,17 +1,29 @@
+# .bashrc
 # Managed by chezmoi. Machine-only tweaks go in ~/.bashrc.local (untracked).
 
-# Fedora system defaults (Debian/Mint load /etc/bash.bashrc on their own).
-[ -f /etc/bashrc ] && . /etc/bashrc
+# Source global definitions (Fedora; Debian/Mint load /etc/bash.bashrc on their own)
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
 
+# User specific environment (shared with zsh: brew, PATH, pnpm, editor, FZF)
 . "$HOME/.config/shell/env.sh"
 command -v mise >/dev/null && eval "$(mise activate bash)"
 
-# Fedora-style drop-in directory
-if [ -d "$HOME/.bashrc.d" ]; then
-  for rc in "$HOME"/.bashrc.d/*; do
-    [ -f "$rc" ] && . "$rc"
-  done
-  unset rc
-fi
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
 
-[ -f "$HOME/.bashrc.local" ] && . "$HOME/.bashrc.local"
+# User specific aliases and functions
+if [ -d ~/.bashrc.d ]; then
+    for rc in ~/.bashrc.d/*; do
+        if [ -f "$rc" ]; then
+            . "$rc"
+        fi
+    done
+fi
+unset rc
+
+# Machine-local overrides (untracked)
+if [ -f ~/.bashrc.local ]; then
+    . ~/.bashrc.local
+fi

@@ -1,2 +1,9 @@
-# Managed by chezmoi. Login bash (macOS, ssh) loads .bashrc too.
-[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+# .bash_profile
+# Managed by chezmoi.
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+
+# User specific environment and startup programs
