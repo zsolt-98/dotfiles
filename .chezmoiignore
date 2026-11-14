@@ -1,6 +1,5 @@
 # Repo-only files: never copied into $HOME.
 README.md
-bootstrap.sh
 test.sh
 packages/
 

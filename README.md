@@ -4,11 +4,31 @@ Personal dev environment for Linux (Fedora, Debian, Mint) and macOS, managed wit
 
 ## New machine
 
-```sh
-sh -c "$(curl -fsSL <bootstrap gist raw url>)"
-```
+The repo is private, so log in with gh first, then let chezmoi clone and apply.
 
-`bootstrap.sh` installs git and gh, logs in to GitHub, installs chezmoi, then runs `chezmoi init --apply zsolt-98`.
+1. Install gh (and git):
+
+   ```sh
+   sudo dnf install -y git gh                         # Fedora
+   sudo apt-get update && sudo apt-get install -y git gh curl   # Debian / Ubuntu / Mint
+   ```
+
+   macOS: install [Homebrew](https://brew.sh) first (it also installs the Xcode Command Line Tools), then `brew install gh`.
+
+2. Log in to GitHub and let git use the gh token:
+
+   ```sh
+   gh auth login --web && gh auth setup-git
+   ```
+
+   No browser on the machine: open github.com/login/device on another device and enter the code shown.
+
+3. Install chezmoi and apply the dotfiles:
+
+   ```sh
+   sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin init --apply zsolt-98
+   ```
+
 chezmoi asks once for:
 
 - **profile**: `desktop` (alacritty, Nerd Font, sway/rofi on Linux) or `headless` (servers)
@@ -16,6 +36,8 @@ chezmoi asks once for:
 - macOS only: apply keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space)
 
 Answers live in `~/.config/chezmoi/chezmoi.toml`, never in the repo.
+
+Then open a new terminal (or log out and in) for zsh and the new PATH.
 
 Without sudo: `DOTFILES_NO_SUDO=1`. Skip Homebrew: `DOTFILES_NO_BREW=1` (CLI tools from dnf/apt instead; no lazygit or herdr).
 
