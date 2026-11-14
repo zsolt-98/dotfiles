@@ -1,0 +1,19 @@
+# Managed by chezmoi. Machine-only settings go in ~/.gitconfig.local (untracked).
+[user]
+	name = {{ .name }}
+	email = {{ .email }}
+{{- if .signingkey }}
+	signingkey = {{ .signingkey }}
+[commit]
+	gpgsign = true
+{{- end }}
+[init]
+	defaultBranch = main
+[credential "https://github.com"]
+	helper =
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !gh auth git-credential
+[include]
+	path = ~/.gitconfig.local

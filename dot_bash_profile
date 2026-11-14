@@ -1,0 +1,2 @@
+# Managed by chezmoi. Login bash (macOS, ssh) loads .bashrc too.
+[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"

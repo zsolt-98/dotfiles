@@ -1,0 +1,17 @@
+# Managed by chezmoi. Machine-only tweaks go in ~/.bashrc.local (untracked).
+
+# Fedora system defaults (Debian/Mint load /etc/bash.bashrc on their own).
+[ -f /etc/bashrc ] && . /etc/bashrc
+
+. "$HOME/.config/shell/env.sh"
+command -v mise >/dev/null && eval "$(mise activate bash)"
+
+# Fedora-style drop-in directory
+if [ -d "$HOME/.bashrc.d" ]; then
+  for rc in "$HOME"/.bashrc.d/*; do
+    [ -f "$rc" ] && . "$rc"
+  done
+  unset rc
+fi
+
+[ -f "$HOME/.bashrc.local" ] && . "$HOME/.bashrc.local"
