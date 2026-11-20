@@ -60,6 +60,7 @@ Scripts in `.chezmoiscripts/` run on `chezmoi apply`:
 | `20-packages` | before files, when a list changes | `packages/dnf.txt` (Fedora), `packages/Brewfile`, Nerd Font (Linux), podman machine (macOS) |
 | `30-mise` | after files, when the mise config changes | node lts, pnpm, python 3.13 from `~/.config/mise/config.toml` |
 | `40-claude` | once | Claude Code (official installer), caveman plugin |
+| `45-herdr-plugins` | after files, when a manifest changes | `herdr plugin link` for `~/.config/herdr/plugins/resurrect` |
 | `50-chsh` | once | zsh as login shell |
 | `60-macos-defaults` | macOS, opt-in, on change | key repeat and system shortcuts |
 
@@ -68,6 +69,16 @@ List tag in `packages/dnf.txt`: `[nobrew]` installs only when Homebrew is missin
 ## Theme
 
 Monokai Pro Ristretto. Colors live once in `.chezmoidata/palette.toml` and feed alacritty, tmux, herdr and the zsh vi-mode cursor.
+
+## herdr session restore
+
+herdr restores layout and cwd on its own; Claude resumes through the herdr hook in `~/.claude/hooks`.
+nvim and lazygit come back through the local `resurrect` plugin:
+
+- zsh wrappers (only inside herdr) write `~/.local/state/herdr-resurrect/<pane>` while the command runs. A normal exit deletes it.
+- On server start, the plugin relaunches each recorded command in its pane. Plain `nvim` reopens the persistence.nvim session for that directory.
+
+Logs: `herdr plugin log`.
 
 ## Per-machine and secret values
 

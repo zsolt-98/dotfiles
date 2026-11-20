@@ -1,0 +1,14 @@
+# Relaunch nvim and lazygit in their panes after a herdr server or machine restart.
+# The zsh wrappers in ~/.zshrc write ~/.local/state/herdr-resurrect/<pane>; restore.py replays them.
+# Registered by .chezmoiscripts/run_onchange_after_45-herdr-plugins (herdr plugin link).
+id = "dotfiles.resurrect"
+name = "Resurrect"
+description = "Relaunch nvim and lazygit in their panes after a restart"
+version = "0.1.0"
+min_herdr_version = "0.9.5"
+platforms = ["linux", "macos"]
+
+# Runs once after herdr restores the session (and again on live handoff, where restore.py
+# skips panes that are still busy).
+[[startup]]
+command = ["python3", "restore.py"]

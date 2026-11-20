@@ -54,5 +54,27 @@ function zvm_after_select_vi_mode() {
   esac
 }
 
+# --- herdr resurrect: relaunch nvim/lazygit after a herdr or machine restart ---
+# Inside a herdr pane, record the running command in a state file named after the pane.
+# A normal exit deletes the file. A kill (SIGHUP/SIGTERM/SIGKILL from a server stop or
+# shutdown) leaves it, and the plugin in ~/.config/herdr/plugins/resurrect replays it.
+if [[ -n $HERDR_PANE_ID ]]; then
+  function _herdr_resurrect() {
+    local dir="${XDG_STATE_HOME:-$HOME/.local/state}/herdr-resurrect"
+    local file="$dir/${HERDR_PANE_ID//[^A-Za-z0-9_-]/_}"
+    mkdir -p "$dir"
+    print -r -- "$HERDR_PANE_ID"$'\n'"$PWD"$'\n'"${(j: :)${(q)@}}" >| "$file"
+    command "$@"
+    local rc=$?
+    case $rc in
+      129|137|143) ;;     # killed by HUP/KILL/TERM: keep the file for the next start
+      *) rm -f "$file" ;;
+    esac
+    return $rc
+  }
+  function nvim() { _herdr_resurrect nvim "$@" }
+  function lazygit() { _herdr_resurrect lazygit "$@" }
+fi
+
 # --- Machine-local overrides (untracked) ---
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

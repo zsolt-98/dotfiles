@@ -1,0 +1,16 @@
+#!/bin/sh
+# Register the local herdr plugins from ~/.config/herdr/plugins with herdr (writes its own
+# untracked plugins.json). Re-runs when a manifest changes:
+#   resurrect {{ include "dot_config/herdr/plugins/resurrect/herdr-plugin.toml" | sha256sum }}
+{{ template "lib.sh" . }}
+
+load_brew
+if ! have herdr; then
+  warn "herdr not found: skipping plugin link"
+  exit 0
+fi
+
+# Fails harmlessly when already linked; never fail the apply. Linked plugins start enabled
+# (herdr 0.9.5 rejects the path after --enabled with "unknown option").
+log "Linking herdr plugin: resurrect"
+herdr plugin link "$HOME/.config/herdr/plugins/resurrect" || true
