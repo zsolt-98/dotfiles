@@ -33,9 +33,16 @@ The repo is private, so log in with gh first, then let chezmoi clone and apply.
 chezmoi asks once for:
 
 - git name, email, signing key (empty for none)
-- macOS only: apply keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space)
+- macOS only: overwrite macOS keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space)
 
 Answers live in `~/.config/chezmoi/chezmoi.toml`, never in the repo.
+To change an answer later, re-ask all prompts (current answers are the defaults):
+
+```sh
+chezmoi init --prompt && chezmoi apply
+```
+
+Keyboard defaults: answering `n` after an earlier `y` reverts them (key repeat back to the macOS setting, Ctrl+arrow and Ctrl+Space shortcuts back on). A Mac that never had `y` is left alone. Log out and in afterwards.
 
 Then open a new terminal (or log out and in) for zsh and the new PATH.
 Without sudo: `DOTFILES_NO_SUDO=1`. Skip Homebrew: `DOTFILES_NO_BREW=1` (CLI tools from dnf instead; no lazygit or herdr).
@@ -62,7 +69,7 @@ Scripts in `.chezmoiscripts/` run on `chezmoi apply`:
 | `40-claude` | once | Claude Code (official installer), caveman plugin |
 | `45-herdr-plugins` | after files, when a manifest changes | `herdr plugin link` for `~/.config/herdr/plugins/resurrect` |
 | `50-chsh` | once | zsh as login shell |
-| `60-macos-defaults` | macOS, opt-in, on change | key repeat and system shortcuts |
+| `60-macos-defaults` | macOS, opt-in, on change | key repeat and system shortcuts; reverts them when the answer flips to `n` |
 
 List tag in `packages/dnf.txt`: `[nobrew]` installs only when Homebrew is missing.
 

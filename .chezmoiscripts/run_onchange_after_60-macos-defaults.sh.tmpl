@@ -1,13 +1,13 @@
-{{- if and (eq .chezmoi.os "darwin") .macos_defaults -}}
+{{- if eq .chezmoi.os "darwin" -}}
 #!/bin/sh
 # Minimal macOS defaults for key parity with Linux (tmux, nvim, herdr use Ctrl+arrows and Ctrl+Space).
-# Opt-in: the macos_defaults prompt in .chezmoi.toml.tmpl. Re-runs when this script changes.
+# Opt-in: the macos_defaults prompt in .chezmoi.toml.tmpl. Re-runs when this script changes,
+# so flipping the answer (chezmoi init --prompt && chezmoi apply) applies or reverts.
+#   macos_defaults = {{ .macos_defaults }}
 {{ template "lib.sh" . }}
 
-log "Keyboard: fast key repeat, no press-and-hold accent popup (vim hjkl repeats)"
-defaults write -g KeyRepeat -int 2
-defaults write -g InitialKeyRepeat -int 15
-defaults write -g ApplePressAndHoldEnabled -bool false
+# Written on apply, removed on revert: revert only touches a Mac this script changed.
+marker="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/macos-defaults-applied"
 
 # Symbolic hotkey IDs:
 #   32, 34  Mission Control (Ctrl+Up)
@@ -16,11 +16,42 @@ defaults write -g ApplePressAndHoldEnabled -bool false
 #   81, 82  Move right a space (Ctrl+Right)
 #   60      Select previous input source (Ctrl+Space)
 #   61      Select next input source (Ctrl+Option+Space)
+hotkeys="32 33 34 35 79 80 81 82 60 61"
+
+{{ if .macos_defaults -}}
+log "Keyboard: fast key repeat, no press-and-hold accent popup (vim hjkl repeats)"
+defaults write -g KeyRepeat -int 2
+defaults write -g InitialKeyRepeat -int 15
+defaults write -g ApplePressAndHoldEnabled -bool false
+
 log "Disabling Ctrl+arrow and Ctrl+Space system shortcuts"
-for id in 32 33 34 35 79 80 81 82 60 61; do
+for id in $hotkeys; do
   defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys \
     -dict-add "$id" "<dict><key>enabled</key><false/></dict>"
 done
+
+mkdir -p "$(dirname "$marker")"
+touch "$marker"
+{{- else -}}
+if [ ! -f "$marker" ]; then
+  exit 0  # never applied here: leave the Mac's own settings alone
+fi
+
+log "Reverting keyboard: macOS key repeat and press-and-hold"
+for key in KeyRepeat InitialKeyRepeat ApplePressAndHoldEnabled; do
+  defaults delete -g "$key" 2>/dev/null || true
+done
+
+# Deleting the entries makes macOS fall back to its built-in shortcuts.
+log "Restoring Ctrl+arrow and Ctrl+Space system shortcuts"
+plist="$HOME/Library/Preferences/com.apple.symbolichotkeys.plist"
+for id in $hotkeys; do
+  /usr/libexec/PlistBuddy -c "Delete :AppleSymbolicHotKeys:$id" "$plist" 2>/dev/null || true
+done
+killall cfprefsd 2>/dev/null || true  # drop the cached copy so the plist edit sticks
+
+rm -f "$marker"
+{{- end }}
 
 # Apply hotkey changes without logging out.
 /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u || true

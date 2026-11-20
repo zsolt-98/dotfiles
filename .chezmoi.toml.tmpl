@@ -7,7 +7,7 @@
 {{- /* macOS only: opt-in keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space). */ -}}
 {{- $macosDefaults := false -}}
 {{- if eq .chezmoi.os "darwin" -}}
-{{-   $macosDefaults = promptBoolOnce . "macos_defaults" "Apply macOS keyboard defaults" true -}}
+{{-   $macosDefaults = promptBoolOnce . "macos_defaults" "Overwrite macOS keyboard defaults (fast key repeat, free Ctrl+arrows and Ctrl+Space)" true -}}
 {{- end -}}
 
 {{- /* Homebrew prefix differs per OS/arch; templates use it instead of hardcoded paths. */ -}}
