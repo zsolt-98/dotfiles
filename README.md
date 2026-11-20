@@ -59,7 +59,7 @@ Scripts in `.chezmoiscripts/` run on `chezmoi apply`:
 | `10-toolchain` | before files, on change | Xcode CLT (macOS) or `@development-tools` / `build-essential`, then Homebrew |
 | `20-packages` | before files, when a list changes | `packages/dnf.txt` (Fedora), `packages/Brewfile`, Nerd Font (Linux), podman machine (macOS) |
 | `30-mise` | after files, when the mise config changes | node lts, pnpm, python 3.13 from `~/.config/mise/config.toml` |
-| `40-claude` | once | Claude Code (official installer) |
+| `40-claude` | once | Claude Code (official installer), caveman plugin |
 | `50-chsh` | once | zsh as login shell |
 | `60-macos-defaults` | macOS, opt-in, on change | key repeat and system shortcuts |
 
