@@ -1,9 +1,8 @@
 #!/bin/sh
-# System packages (packages/dnf.txt or packages/apt.txt) and the shared packages/Brewfile.
+# System packages (packages/dnf.txt, Fedora) and the shared packages/Brewfile.
 # Re-runs when a list changes (hashes below) or the profile changes:
 #   Brewfile {{ include "packages/Brewfile" | sha256sum }}
 #   dnf.txt  {{ include "packages/dnf.txt" | sha256sum }}
-#   apt.txt  {{ include "packages/apt.txt" | sha256sum }}
 {{ template "lib.sh" . }}
 
 load_brew
@@ -16,17 +15,10 @@ detect_pm
 if [ "$CAN_SUDO" = 1 ] && [ -n "$PM" ]; then
   pkgs=$(read_pkgs "$SOURCE_DIR/packages/$PM.txt" "$NOBREW")
   log "Installing $PM packages:" $pkgs
-  if [ "$PM" = apt ]; then $SUDO apt-get update; fi
   # shellcheck disable=SC2086
   pm_install $pkgs
 else
-  warn "No sudo or unknown package manager: skipping system packages"
-fi
-
-# Debian/Ubuntu ship fd as "fdfind".
-if ! have fd && have fdfind; then
-  mkdir -p "$HOME/.local/bin"
-  ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+  warn "No sudo or no dnf: skipping system packages"
 fi
 {{- end }}
 

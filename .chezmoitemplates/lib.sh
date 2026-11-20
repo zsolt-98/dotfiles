@@ -27,10 +27,9 @@ detect_sudo() {
   fi
 }
 
-# Sets PM to dnf, apt or "" (unknown Linux).
+# Sets PM to dnf, or "" on other Linux (only Fedora is supported).
 detect_pm() {
   if have dnf; then PM=dnf
-  elif have apt-get; then PM=apt
   else PM=""
   fi
 }
@@ -58,6 +57,5 @@ pm_install() {
   if [ $# -eq 0 ]; then return 0; fi
   case $PM in
     dnf) $SUDO dnf install -y "$@" ;;
-    apt) $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y "$@" ;;
   esac
 }

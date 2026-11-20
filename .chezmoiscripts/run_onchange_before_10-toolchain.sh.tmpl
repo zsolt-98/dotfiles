@@ -1,6 +1,6 @@
 #!/bin/sh
 # Build toolchain and Homebrew. Runs before dotfiles are written; re-runs only when this script changes.
-# Env: DOTFILES_NO_SUDO=1 skips sudo, DOTFILES_NO_BREW=1 skips Homebrew (dnf/apt fallback then).
+# Env: DOTFILES_NO_SUDO=1 skips sudo, DOTFILES_NO_BREW=1 skips Homebrew (dnf fallback then).
 {{ template "lib.sh" . }}
 
 detect_sudo
@@ -21,13 +21,8 @@ if [ "$CAN_SUDO" = 1 ]; then
       log "Installing build toolchain (dnf)"
       $SUDO dnf install -y @development-tools procps-ng curl file git tar xz
       ;;
-    apt)
-      log "Installing build toolchain (apt)"
-      $SUDO apt-get update
-      pm_install build-essential procps curl file git ca-certificates xz-utils
-      ;;
     *)
-      warn "Unknown package manager: install a C toolchain, curl and git yourself"
+      warn "No dnf (not Fedora): install a C toolchain, curl and git yourself"
       ;;
   esac
 else
@@ -41,9 +36,9 @@ if [ -x "$BREW" ]; then
 elif [ "${DOTFILES_NO_BREW:-0}" = 1 ]; then
   warn "DOTFILES_NO_BREW=1: skipping Homebrew"
 elif [ "$(id -u)" -eq 0 ]; then
-  warn "Running as root: Homebrew refuses root, skipping (dnf/apt fallback)"
+  warn "Running as root: Homebrew refuses root, skipping (dnf fallback)"
 elif [ "$CAN_SUDO" = 0 ]; then
-  warn "No sudo: skipping Homebrew (dnf/apt fallback)"
+  warn "No sudo: skipping Homebrew (dnf fallback)"
 else
   log "Installing Homebrew"
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"

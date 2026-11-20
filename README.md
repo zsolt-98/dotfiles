@@ -4,7 +4,6 @@ Personal dev environment, managed with [chezmoi](https://chezmoi.io), for:
 
 - **Fedora Sway** desktop
 - **macOS** laptop
-- **Ubuntu Server 26.04** laptop: same dev tools plus a minimal sway (waybar, alacritty, qutebrowser), started from tty1
 
 ## New machine
 
@@ -13,9 +12,7 @@ The repo is private, so log in with gh first, then let chezmoi clone and apply.
 1. Install gh (and git):
 
    ```sh
-   sudo dnf install -y git gh                         # Fedora
-   sudo apt-get update && sudo apt-get install -y git gh curl   # Ubuntu
-   ```
+   sudo dnf install -y git gh                         # Fedora   ```
 
    macOS: install [Homebrew](https://brew.sh) first (it also installs the Xcode Command Line Tools), then `brew install gh`.
 
@@ -35,17 +32,14 @@ The repo is private, so log in with gh first, then let chezmoi clone and apply.
 
 chezmoi asks once for:
 
-- **profile**: `desktop` (alacritty, Nerd Font, sway/rofi configs on Linux; on Ubuntu also the sway packages and qutebrowser) or `headless` (CLI only, for SSH-only servers). The guess is `headless` when no display is running, so type `d` on the Ubuntu Server laptop.
+- **profile**: `desktop` (alacritty, Nerd Font, sway/rofi configs on Linux) or `headless` (CLI only, for SSH-only servers). The guess is `headless` when no display is running; typing `d` or `h` selects immediately.
 - git name, email, signing key (empty for none)
 - macOS only: apply keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space)
 
 Answers live in `~/.config/chezmoi/chezmoi.toml`, never in the repo.
 
 Then open a new terminal (or log out and in) for zsh and the new PATH.
-On the Ubuntu Server laptop, log out and log in on tty1: `~/.zprofile` starts sway.
-When sway exits you are back in plain zsh; tty2 (Ctrl+Alt+F2) is always a plain console.
-
-Without sudo: `DOTFILES_NO_SUDO=1`. Skip Homebrew: `DOTFILES_NO_BREW=1` (CLI tools from dnf/apt instead; no lazygit or herdr).
+Without sudo: `DOTFILES_NO_SUDO=1`. Skip Homebrew: `DOTFILES_NO_BREW=1` (CLI tools from dnf instead; no lazygit or herdr).
 
 ## Day to day
 
@@ -64,7 +58,7 @@ Scripts in `.chezmoiscripts/` run on `chezmoi apply`:
 | Script | When | Does |
 |---|---|---|
 | `10-toolchain` | before files, on change | Xcode CLT (macOS) or `@development-tools` / `build-essential`, then Homebrew |
-| `20-packages` | before files, when a list changes | `packages/dnf.txt` or `packages/apt.txt`, `packages/Brewfile`, Nerd Font (Linux desktop), podman machine (macOS) |
+| `20-packages` | before files, when a list changes | `packages/dnf.txt` (Fedora), `packages/Brewfile`, Nerd Font (Linux desktop), podman machine (macOS) |
 | `30-mise` | after files, when the mise config changes | node lts, pnpm, python 3.13 from `~/.config/mise/config.toml` |
 | `40-claude` | once | Claude Code (official installer) |
 | `50-chsh` | once | zsh as login shell |
@@ -88,8 +82,8 @@ Never tracked: `~/.config/gh/hosts.yml` (gh token), `~/.kube`, Claude history/pr
 ## Testing
 
 ```sh
-./test.sh                   # headless install in podman: fedora, ubuntu
-./test.sh --no-brew ubuntu  # dnf/apt fallback
+./test.sh            # headless install in a podman fedora container
+./test.sh --no-brew  # dnf fallback
 ```
 
 macOS is tested by hand.

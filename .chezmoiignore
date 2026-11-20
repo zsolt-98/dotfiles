@@ -11,13 +11,8 @@ packages/
 .config/alacritty
 {{ end }}
 
-# Sway stack: Linux desktop only (sway itself comes from dnf on Fedora, apt.txt on Ubuntu).
-# No lookPath check: on a first apply sway is installed by a script after this file is read.
+# Sway stack: Linux (Fedora Sway) desktop only.
 {{ if or (ne .chezmoi.os "linux") (ne .profile "desktop") }}
 .config/sway
 .config/rofi
-{{ else if eq .chezmoi.osRelease.id "fedora" }}
-# Fedora ships these drop-ins in /usr/share/sway/config.d.
-.config/sway/config.d/90-bar.conf
-.config/sway/config.d/60-bindings-brightness.conf
 {{ end }}

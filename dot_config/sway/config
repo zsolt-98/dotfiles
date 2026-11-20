@@ -31,12 +31,7 @@ set $menu $rofi_cmd -show combi -combi-modes drun#run -modes combi
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 # Requires: desktop-backgrounds-compat, swaybg, jxl-pixbuf-loader
-{{- if eq .chezmoi.osRelease.id "fedora" }}
 output * bg /usr/share/backgrounds/default.jxl fill
-{{- else }}
-# Not Fedora (no Fedora wallpaper): solid Ristretto background from .chezmoidata/palette.toml.
-output * bg {{ .palette.background }} solid_color
-{{- end }}
 #
 # Example configuration:
 #
@@ -230,14 +225,7 @@ bindsym $mod+r mode "resize"
 # important to make the magic work. And if you want to learn the secret behind
 # the trick, it's all in the `wordexp(3)`.
 #
-{{- if eq .chezmoi.osRelease.id "fedora" }}
 include '$(/usr/libexec/sway/layered-include "/usr/share/sway/config.d/*.conf" "/etc/sway/config.d/*.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/sway/config.d/*.conf")'
-{{- else }}
-# Not Fedora: no layered-include helper and no /usr/share/sway/config.d drop-ins.
-# Distro drop-ins first, then ours (bar, brightness keys, swayidle; ported from Fedora).
-include /etc/sway/config.d/*
-include ~/.config/sway/config.d/*.conf
-{{- end }}
 
 # Hide mouse cursor after 5s idle or on any keypress; reappears on movement
 seat * hide_cursor 5000

@@ -17,7 +17,7 @@ brew "mise"
 brew "chezmoi"
 
 if OS.mac?
-  # Linux gets podman from dnf/apt (packages/*.txt).
+  # Fedora gets podman from dnf (packages/dnf.txt).
   brew "podman"
 
   if ENV["DOTFILES_PROFILE"] == "desktop"

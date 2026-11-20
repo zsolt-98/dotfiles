@@ -2,40 +2,33 @@
 # Test a headless install from this local source dir in throwaway podman containers.
 # Runs as a non-root user with passwordless sudo (Homebrew refuses root), then checks the tools.
 #
-#   ./test.sh                    fedora and ubuntu
-#   ./test.sh ubuntu             one distro
-#   ./test.sh --no-brew ubuntu   dnf/apt fallback only (DOTFILES_NO_BREW=1)
+#   ./test.sh             fedora
+#   ./test.sh --no-brew   dnf fallback only (DOTFILES_NO_BREW=1)
 #
-# Images can be overridden: FEDORA_IMAGE, UBUNTU_IMAGE.
+# Image can be overridden: FEDORA_IMAGE.
 # Logs go to $TEST_LOGS (default /tmp/dotfiles-test-logs), outside the repo.
 set -eu
 
 SRC=$(cd "$(dirname "$0")" && pwd)
 LOGS=${TEST_LOGS:-${TMPDIR:-/tmp}/dotfiles-test-logs}
 FEDORA_IMAGE=${FEDORA_IMAGE:-registry.fedoraproject.org/fedora:44}
-UBUNTU_IMAGE=${UBUNTU_IMAGE:-docker.io/library/ubuntu:26.04}
 
 NO_BREW=0
 distros=""
 for arg in "$@"; do
   case $arg in
     --no-brew) NO_BREW=1 ;;
-    fedora|ubuntu) distros="$distros $arg" ;;
+    fedora) distros="$distros $arg" ;;
     *) echo "unknown argument: $arg" >&2; exit 2 ;;
   esac
 done
-[ -n "$distros" ] || distros="fedora ubuntu"
+[ -n "$distros" ] || distros="fedora"
 mkdir -p "$LOGS"
 
 # Root part: sudo, curl, a test user with passwordless sudo.
 root_setup='
 set -eu
-if command -v dnf >/dev/null; then
-  dnf install -y sudo curl git ca-certificates shadow-utils
-else
-  apt-get update
-  DEBIAN_FRONTEND=noninteractive apt-get install -y sudo curl git ca-certificates
-fi
+dnf install -y sudo curl git ca-certificates shadow-utils
 useradd -m -s /bin/bash tester
 echo "tester ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/tester
 chmod 440 /etc/sudoers.d/tester
@@ -78,7 +71,6 @@ summary=""
 for d in $distros; do
   case $d in
     fedora) image=$FEDORA_IMAGE ;;
-    ubuntu) image=$UBUNTU_IMAGE ;;
   esac
   name="dotfiles-test-$d"
   log="$LOGS/$d.log"
