@@ -35,6 +35,9 @@ shell-integration-features = no-cursor
 # Option acts as Alt/Meta, same as Alt on Linux (zsh, tmux, nvim, herdr)
 macos-option-as-alt = true
 
-# Same Ctrl+Shift copy/paste as Linux; Cmd+C/V still work
+# Same Ctrl+Shift copy/paste as Linux; Cmd+V still works (Cmd+C is fzf below)
 keybind = ctrl+shift+c=copy_to_clipboard
 keybind = ctrl+shift+v=paste_from_clipboard
+
+# Cmd = Linux Alt: Cmd+C sends Alt+C (fzf cd into a directory). Ctrl+T and Ctrl+R pass through as is.
+keybind = cmd+c=esc:c
