@@ -77,12 +77,3 @@ Never commit them. Put them in untracked files, which the tracked configs source
 - `~/.gitconfig.local`
 
 Never tracked: `~/.config/gh/hosts.yml` (gh token), `~/.kube`, Claude history/projects/memory.
-
-## Testing
-
-```sh
-./test.sh            # install in a podman fedora container
-./test.sh --no-brew  # dnf fallback
-```
-
-macOS is tested by hand.

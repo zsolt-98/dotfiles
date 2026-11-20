@@ -1,6 +1,5 @@
 # Repo-only files: never copied into $HOME.
 README.md
-test.sh
 packages/
 
 # Managed by Claude itself (claude.ai synced skills).
