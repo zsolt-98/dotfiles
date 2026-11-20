@@ -32,7 +32,6 @@ The repo is private, so log in with gh first, then let chezmoi clone and apply.
 
 chezmoi asks once for:
 
-- **profile**: `desktop` (alacritty, Nerd Font, sway/rofi configs on Linux) or `headless` (CLI only, for SSH-only servers). The guess is `headless` when no display is running; typing `d` or `h` selects immediately.
 - git name, email, signing key (empty for none)
 - macOS only: apply keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space)
 
@@ -58,13 +57,13 @@ Scripts in `.chezmoiscripts/` run on `chezmoi apply`:
 | Script | When | Does |
 |---|---|---|
 | `10-toolchain` | before files, on change | Xcode CLT (macOS) or `@development-tools` / `build-essential`, then Homebrew |
-| `20-packages` | before files, when a list changes | `packages/dnf.txt` (Fedora), `packages/Brewfile`, Nerd Font (Linux desktop), podman machine (macOS) |
+| `20-packages` | before files, when a list changes | `packages/dnf.txt` (Fedora), `packages/Brewfile`, Nerd Font (Linux), podman machine (macOS) |
 | `30-mise` | after files, when the mise config changes | node lts, pnpm, python 3.13 from `~/.config/mise/config.toml` |
 | `40-claude` | once | Claude Code (official installer) |
 | `50-chsh` | once | zsh as login shell |
 | `60-macos-defaults` | macOS, opt-in, on change | key repeat and system shortcuts |
 
-List tags in `packages/*.txt`: `[desktop]` installs only on the desktop profile, `[nobrew]` only when Homebrew is missing.
+List tag in `packages/dnf.txt`: `[nobrew]` installs only when Homebrew is missing.
 
 ## Theme
 
@@ -82,7 +81,7 @@ Never tracked: `~/.config/gh/hosts.yml` (gh token), `~/.kube`, Claude history/pr
 ## Testing
 
 ```sh
-./test.sh            # headless install in a podman fedora container
+./test.sh            # install in a podman fedora container
 ./test.sh --no-brew  # dnf fallback
 ```
 

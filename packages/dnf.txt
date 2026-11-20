@@ -1,6 +1,5 @@
 # Fedora packages. One per line; "#" starts a comment.
-# Tags after the name:
-#   [desktop]  only on the desktop profile
+# Tag after the name:
 #   [nobrew]   only when Homebrew is missing (fallback for the Brewfile CLI tools)
 # Build toolchain (@development-tools) is installed earlier by run_onchange_before_10-toolchain.
 
@@ -8,8 +7,7 @@ zsh
 podman
 podman-compose
 podman-docker
-
-alacritty           [desktop]
+alacritty
 
 # Fallback CLI when brew is missing. lazygit and herdr have no Fedora package (lazygit: COPR dejan/lazygit).
 git                 [nobrew]

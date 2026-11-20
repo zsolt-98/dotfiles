@@ -1,7 +1,6 @@
 # Shared CLI tools for Linux (Linuxbrew) and macOS.
 # Installed by .chezmoiscripts/run_onchange_before_20-packages.sh.tmpl, which re-runs when this file changes.
 # zsh is not here: it comes from the system package manager, so chsh accepts it (/etc/shells).
-# DOTFILES_PROFILE (desktop | headless) is set by the install script.
 
 brew "git"
 brew "neovim"
@@ -20,8 +19,6 @@ if OS.mac?
   # Fedora gets podman from dnf (packages/dnf.txt).
   brew "podman"
 
-  if ENV["DOTFILES_PROFILE"] == "desktop"
-    cask "alacritty"
-    cask "font-jetbrains-mono-nerd-font"
-  end
+  cask "alacritty"
+  cask "font-jetbrains-mono-nerd-font"
 end

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Test a headless install from this local source dir in throwaway podman containers.
+# Test an install from this local source dir in throwaway podman containers.
 # Runs as a non-root user with passwordless sudo (Homebrew refuses root), then checks the tools.
 #
 #   ./test.sh             fedora
@@ -42,7 +42,6 @@ sh -c "$(curl -fsSL https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
 mkdir -p "$HOME/.local/share"
 cp -r /src "$HOME/.local/share/chezmoi"
 chezmoi init --apply --no-tty \
-  --promptChoice profile=headless \
   --promptString "name=Test User,email=test@example.com,signingkey="
 '
 
@@ -62,7 +61,6 @@ for t in node pnpm python; do
 done
 [ -d "$HOME/.oh-my-zsh" ] && echo "ok      oh-my-zsh" || { echo "MISSING oh-my-zsh"; fail=1; }
 [ -d "$HOME/.tmux/plugins/tpm" ] && echo "ok      tpm" || { echo "MISSING tpm"; fail=1; }
-[ ! -e "$HOME/.config/alacritty" ] && echo "ok      no alacritty config (headless)" || { echo "BAD     alacritty config on headless"; fail=1; }
 case $(getent passwd tester | cut -d: -f7) in */zsh) echo "ok      login shell zsh" ;; *) echo "BAD     login shell"; fail=1 ;; esac
 exit $fail
 '

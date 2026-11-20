@@ -1,6 +1,6 @@
 #!/bin/sh
 # System packages (packages/dnf.txt, Fedora) and the shared packages/Brewfile.
-# Re-runs when a list changes (hashes below) or the profile changes:
+# Re-runs when a list changes (hashes below):
 #   Brewfile {{ include "packages/Brewfile" | sha256sum }}
 #   dnf.txt  {{ include "packages/dnf.txt" | sha256sum }}
 {{ template "lib.sh" . }}
@@ -24,7 +24,7 @@ fi
 
 if [ "$NOBREW" = 0 ]; then
   log "brew bundle"
-  DOTFILES_PROFILE="$PROFILE" brew bundle install --no-upgrade --file="$SOURCE_DIR/packages/Brewfile"
+  brew bundle install --no-upgrade --file="$SOURCE_DIR/packages/Brewfile"
 else
   # Without brew: mise from its official installer (~/.local/bin/mise). lazygit and herdr stay missing.
   if ! have mise; then
@@ -42,8 +42,8 @@ if have podman && ! podman machine inspect >/dev/null 2>&1; then
 fi
 {{- end }}
 
-{{ if and (eq .chezmoi.os "linux") (eq .profile "desktop") -}}
-# JetBrainsMono Nerd Font (macOS gets it as a cask). Fonts render client-side, so headless skips it.
+{{ if eq .chezmoi.os "linux" -}}
+# JetBrainsMono Nerd Font (macOS gets it as a cask).
 if ! fc-list 2>/dev/null | grep -q "JetBrainsMono Nerd Font"; then
   log "Installing JetBrainsMono Nerd Font"
   dir="$HOME/.local/share/fonts/JetBrainsMonoNerd"

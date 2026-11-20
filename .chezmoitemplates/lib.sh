@@ -5,7 +5,6 @@ log()  { printf '\033[1;33m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;31m!!  %s\033[0m\n' "$*" >&2; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
-PROFILE={{ .profile | quote }}
 SOURCE_DIR={{ .chezmoi.sourceDir | quote }}
 BREW={{ printf "%s/bin/brew" .brewprefix | quote }}
 export PATH="$HOME/.local/bin:$PATH"
@@ -35,7 +34,7 @@ detect_pm() {
 }
 
 # Print package names from a packages/*.txt list.
-# Drops comments and blank lines; keeps [desktop] and [nobrew] lines only when they apply.
+# Drops comments and blank lines; keeps [nobrew] lines only when Homebrew is missing.
 read_pkgs() {
   _file=$1 _nobrew=$2
   while IFS= read -r _line; do
@@ -45,7 +44,6 @@ read_pkgs() {
     if [ $# -eq 0 ]; then continue; fi
     case ${2:-} in
       "") echo "$1" ;;
-      "[desktop]") if [ "$PROFILE" = desktop ]; then echo "$1"; fi ;;
       "[nobrew]") if [ "$_nobrew" = 1 ]; then echo "$1"; fi ;;
       *) warn "unknown tag '$2' in $_file" ;;
     esac

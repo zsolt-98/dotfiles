@@ -6,13 +6,8 @@ packages/
 # Managed by Claude itself (claude.ai synced skills).
 .claude/skills/synced
 
-# Desktop-only configs.
-{{ if ne .profile "desktop" }}
-.config/alacritty
-{{ end }}
-
-# Sway stack: Linux (Fedora Sway) desktop only.
-{{ if or (ne .chezmoi.os "linux") (ne .profile "desktop") }}
+# Sway stack: Linux (Fedora Sway) only.
+{{ if ne .chezmoi.os "linux" }}
 .config/sway
 .config/rofi
 {{ end }}
