@@ -10,3 +10,10 @@ packages/
 .config/sway
 .config/rofi
 {{ end }}
+
+# Terminal: Alacritty on Linux, Ghostty on macOS (Homebrew disabled the Alacritty cask).
+{{ if eq .chezmoi.os "darwin" }}
+.config/alacritty
+{{ else }}
+.config/ghostty
+{{ end }}

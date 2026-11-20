@@ -65,7 +65,6 @@ Scripts in `.chezmoiscripts/` run on `chezmoi apply`:
 |---|---|---|
 | `10-toolchain` | before files, on change | Xcode CLT (macOS) or `@development-tools` / `build-essential`, then Homebrew |
 | `20-packages` | before files, when a list changes | `packages/dnf.txt` (Fedora), `packages/Brewfile`, Nerd Font (Linux), podman machine (macOS) |
-| `25-alacritty` | macOS, before files, when the pinned version changes | builds Alacritty from source (cask disabled: not notarized) into `/Applications`, or `~/Applications` without admin rights; terminfo to `~/.terminfo` |
 | `30-mise` | after files, when the mise config changes | node lts, pnpm, python 3.13 from `~/.config/mise/config.toml` |
 | `40-claude` | once | Claude Code (official installer), caveman plugin |
 | `45-herdr-plugins` | after files, when a manifest changes | `herdr plugin link` for `~/.config/herdr/plugins/resurrect` |
@@ -76,7 +75,7 @@ List tag in `packages/dnf.txt`: `[nobrew]` installs only when Homebrew is missin
 
 ## Theme
 
-Monokai Pro Ristretto. Colors live once in `.chezmoidata/palette.toml` and feed alacritty, tmux, herdr and the zsh vi-mode cursor.
+Monokai Pro Ristretto. Colors live once in `.chezmoidata/palette.toml` and feed alacritty (Linux), ghostty (macOS), tmux, herdr and the zsh vi-mode cursor.
 
 ## herdr session restore
 

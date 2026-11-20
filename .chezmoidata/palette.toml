@@ -1,5 +1,5 @@
 # Monokai Pro Ristretto. Single source of truth for theme colors.
-# Used by: alacritty, herdr, .zshrc (vi-mode cursor/highlight), tmux status bar.
+# Used by: alacritty (Linux), ghostty (macOS), herdr, .zshrc (vi-mode cursor/highlight), tmux status bar.
 # nvim uses the monokai-ristretto colorscheme; rofi uses the system Monokai theme.
 
 [palette]

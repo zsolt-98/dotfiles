@@ -1,0 +1,40 @@
+# Ghostty, macOS only (Linux uses Alacritty: ~/.config/alacritty/alacritty.toml).
+# Monokai Pro Ristretto. Colors come from .chezmoidata/palette.toml in the dotfiles repo.
+
+font-family = JetBrainsMono Nerd Font
+font-size = 14
+
+background = {{ .palette.background }}
+foreground = {{ .palette.foreground }}
+cursor-color = {{ .palette.cursor }}
+cursor-text = {{ .palette.background }}
+selection-background = {{ .palette.selection }}
+selection-foreground = {{ .palette.foreground }}
+
+# ANSI colors, same slots as Alacritty (orange in "blue", purple in "magenta")
+palette = 0={{ .palette.background }}
+palette = 1={{ .palette.red }}
+palette = 2={{ .palette.green }}
+palette = 3={{ .palette.yellow }}
+palette = 4={{ .palette.orange }}
+palette = 5={{ .palette.purple }}
+palette = 6={{ .palette.cyan }}
+palette = 7={{ .palette.foreground }}
+palette = 8={{ .palette.dimmed }}
+palette = 9={{ .palette.red }}
+palette = 10={{ .palette.green }}
+palette = 11={{ .palette.yellow }}
+palette = 12={{ .palette.orange }}
+palette = 13={{ .palette.purple }}
+palette = 14={{ .palette.cyan }}
+palette = 15={{ .palette.foreground }}
+
+# zsh-vi-mode in ~/.zshrc sets the cursor shape per mode; keep Ghostty's shell integration off it
+shell-integration-features = no-cursor
+
+# Option acts as Alt/Meta, same as Alt on Linux (zsh, tmux, nvim, herdr)
+macos-option-as-alt = true
+
+# Same Ctrl+Shift copy/paste as Linux; Cmd+C/V still work
+keybind = ctrl+shift+c=copy_to_clipboard
+keybind = ctrl+shift+v=paste_from_clipboard
