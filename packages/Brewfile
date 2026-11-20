@@ -18,7 +18,9 @@ brew "chezmoi"
 if OS.mac?
   # Fedora gets podman from dnf (packages/dnf.txt).
   brew "podman"
+  # Builds Alacritty from source (.chezmoiscripts/run_onchange_before_25-alacritty): its cask is
+  # disabled because the app is not notarized, and a locally built app skips Gatekeeper.
+  brew "rust"
 
-  cask "alacritty"
   cask "font-jetbrains-mono-nerd-font"
 end

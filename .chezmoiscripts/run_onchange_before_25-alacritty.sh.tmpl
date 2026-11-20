@@ -1,0 +1,46 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+# Build Alacritty from source on macOS (official `make app` from its INSTALL.md).
+# Homebrew disabled the cask (app not notarized); an app built locally has no quarantine flag,
+# so Gatekeeper lets it run. cargo comes from brew "rust" in packages/Brewfile (20-packages).
+# Bump VERSION to update: the script re-runs when it changes. Skips the build when the
+# installed app already has this version.
+{{ template "lib.sh" . }}
+
+VERSION=0.17.0
+
+load_brew
+if ! have cargo; then
+  warn "cargo not found (brew \"rust\"): skipping Alacritty build"
+  exit 0
+fi
+
+# /Applications needs admin rights; fall back to ~/Applications on a standard account.
+if [ -w /Applications ]; then apps=/Applications; else apps="$HOME/Applications"; fi
+app="$apps/Alacritty.app"
+
+for dir in /Applications "$HOME/Applications"; do
+  if "$dir/Alacritty.app/Contents/MacOS/alacritty" --version 2>/dev/null | grep -q " $VERSION"; then
+    log "Alacritty $VERSION already installed in $dir"
+    exit 0
+  fi
+done
+
+src="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/alacritty"
+rm -rf "$src"
+mkdir -p "$(dirname "$src")"
+log "Building Alacritty $VERSION (takes a few minutes)"
+git clone --quiet --depth 1 --branch "v$VERSION" https://github.com/alacritty/alacritty.git "$src"
+(cd "$src" && make app)
+
+log "Installing $app"
+mkdir -p "$apps"
+rm -rf "$app"
+cp -R "$src/target/release/osx/Alacritty.app" "$app"
+
+# User-level terminfo (no sudo), so TERM=alacritty works for tmux and nvim.
+log "Installing alacritty terminfo to ~/.terminfo"
+tic -xe alacritty,alacritty-direct -o "$HOME/.terminfo" "$src/extra/alacritty.info"
+
+rm -rf "$src"  # the build tree is large; a version bump clones again
+{{- end }}
