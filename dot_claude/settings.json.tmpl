@@ -1,6 +1,6 @@
 {
   "permissions": {
-    "defaultMode": "default"
+    "defaultMode": {{ if or (stat "/.dockerenv") (stat "/run/.containerenv") }}"auto"{{ else }}"default"{{ end }}
   },
   "model": "opus",
   "statusLine": {

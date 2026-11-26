@@ -1,5 +1,6 @@
 # Repo-only files: never copied into $HOME.
 README.md
+install.sh
 packages/
 
 # Managed by Claude itself (claude.ai synced skills).
@@ -16,4 +17,12 @@ packages/
 .config/alacritty
 {{ else }}
 .config/ghostty
+{{ end }}
+
+# Containers (Docker's /.dockerenv, podman's /run/.containerenv): no desktop, so no window manager,
+# launcher or terminal config.
+{{ if or (stat "/.dockerenv") (stat "/run/.containerenv") }}
+.config/sway
+.config/rofi
+.config/alacritty
 {{ end }}

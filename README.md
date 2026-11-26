@@ -7,7 +7,7 @@ Personal dev environment, managed with [chezmoi](https://chezmoi.io), for:
 
 ## New machine
 
-The repo is private, so log in with gh first, then let chezmoi clone and apply.
+Log in with gh first (git pushes from the source dir use its token), then let chezmoi clone and apply.
 
 1. Install gh (and git):
 
@@ -35,7 +35,7 @@ chezmoi asks once for:
 - git name, email, signing key (empty for none)
 - macOS only: overwrite macOS keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space)
 
-Answers live in `~/.config/chezmoi/chezmoi.toml`, never in the repo.
+Answers live in `~/.config/chezmoi/chezmoi.toml`. The repo holds only the prompt defaults.
 To change an answer later, re-ask all prompts (current answers are the defaults):
 
 ```sh
@@ -72,6 +72,26 @@ Scripts in `.chezmoiscripts/` run on `chezmoi apply`:
 | `60-macos-defaults` | macOS, opt-in, on change | key repeat and system shortcuts; reverts them when the answer flips to `n` |
 
 List tag in `packages/dnf.txt`: `[nobrew]` installs only when Homebrew is missing.
+
+## Devcontainer
+
+Any devcontainer gets this environment through the devcontainer dotfiles mechanism:
+
+```sh
+devcontainer up --workspace-folder . --dotfiles-repository https://github.com/zsolt-98/dotfiles
+```
+
+The CLI clones this repo to `~/dotfiles` inside the container and runs `install.sh`. That script installs chezmoi and applies without prompts: git name and email come from the defaults in `.chezmoi.toml.tmpl`, and `--force` replaces the image's own `~/.zshrc`. Rebuilds run it again from scratch, so mount volumes for anything that should survive one (the Claude config, `/home/linuxbrew`).
+
+Inside a container (Docker's `/.dockerenv` or podman's `/run/.containerenv`):
+
+- The image provides system packages and the toolchain. `10-toolchain` and `20-packages` skip dnf and the Nerd Font. Homebrew, mise and Claude Code install as usual.
+- No sway, rofi or alacritty config.
+- Claude Code starts in auto permission mode.
+- zsh shows the hostname on the right of the prompt.
+- nvim yanks to the host clipboard over OSC 52. Paste host text with the terminal's paste key.
+
+On a host with podman, `.zshrc` wraps `devcontainer` to add `--docker-path podman` and `PODMAN_USERNS=keep-id`. Rootless podman otherwise maps the container user to a subuid, and that user cannot write the bind-mounted project.
 
 ## Theme
 

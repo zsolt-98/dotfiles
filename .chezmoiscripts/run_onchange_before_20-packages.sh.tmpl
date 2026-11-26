@@ -9,7 +9,7 @@ load_brew
 NOBREW=1
 if have brew; then NOBREW=0; fi
 
-{{ if eq .chezmoi.os "linux" -}}
+{{ if and (eq .chezmoi.os "linux") (not (or (stat "/.dockerenv") (stat "/run/.containerenv"))) -}}
 detect_sudo
 detect_pm
 if [ "$CAN_SUDO" = 1 ] && [ -n "$PM" ]; then
@@ -42,7 +42,7 @@ if have podman && ! podman machine inspect >/dev/null 2>&1; then
 fi
 {{- end }}
 
-{{ if eq .chezmoi.os "linux" -}}
+{{ if and (eq .chezmoi.os "linux") (not (or (stat "/.dockerenv") (stat "/run/.containerenv"))) -}}
 # JetBrainsMono Nerd Font (macOS gets it as a cask).
 if ! fc-list 2>/dev/null | grep -q "JetBrainsMono Nerd Font"; then
   log "Installing JetBrainsMono Nerd Font"

@@ -1,7 +1,8 @@
-{{- /* Runs on `chezmoi init`. Answers are stored in ~/.config/chezmoi/chezmoi.toml, never in the repo. */ -}}
+{{- /* Runs on `chezmoi init`. Answers are stored in ~/.config/chezmoi/chezmoi.toml. */ -}}
+{{- /* Defaults answer the prompts in non-interactive runs (install.sh passes --promptDefaults). */ -}}
 
-{{- $name := promptStringOnce . "name" "Git name" -}}
-{{- $email := promptStringOnce . "email" "Git email" -}}
+{{- $name := promptStringOnce . "name" "Git name" "Zsolt" -}}
+{{- $email := promptStringOnce . "email" "Git email" "zsolt.nagy998@gmail.com" -}}
 {{- $signingkey := promptStringOnce . "signingkey" "Git signing key (leave empty for none)" "" -}}
 
 {{- /* macOS only: opt-in keyboard defaults (key repeat, free Ctrl+arrows and Ctrl+Space). */ -}}
@@ -18,6 +19,9 @@
 {{-     $brewprefix = "/usr/local" -}}
 {{-   end -}}
 {{- end -}}
+
+{{- /* Remember where this source lives: a devcontainer clones it to ~/dotfiles, not the default path. */ -}}
+sourceDir = {{ .chezmoi.sourceDir | quote }}
 
 [data]
     name = {{ $name | quote }}

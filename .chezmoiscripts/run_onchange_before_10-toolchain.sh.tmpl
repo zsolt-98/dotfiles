@@ -12,6 +12,9 @@ if ! xcode-select -p >/dev/null 2>&1; then
   xcode-select --install || true
   until xcode-select -p >/dev/null 2>&1; do sleep 5; done
 fi
+{{- else if or (stat "/.dockerenv") (stat "/run/.containerenv") -}}
+# Container: the image provides the toolchain (and may not be Fedora).
+log "Container: build toolchain comes from the image"
 {{- else -}}
 # C toolchain plus what the Homebrew installer needs (curl, file, git, procps) and xz for font archives.
 detect_pm

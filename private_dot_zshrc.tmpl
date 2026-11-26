@@ -75,6 +75,26 @@ if [[ -n $HERDR_PANE_ID ]]; then
   function nvim() { _herdr_resurrect nvim "$@" }
   function lazygit() { _herdr_resurrect lazygit "$@" }
 fi
+{{- if or (stat "/.dockerenv") (stat "/run/.containerenv") }}
+
+# --- Container: hostname on the right, so this shell is never mistaken for the host ---
+RPROMPT='%F{yellow}[%m]%f'
+{{- else }}
+
+# --- devcontainer CLI on podman ---
+# Rootless podman maps the container's uid 1000 to a subuid unless keep-id is set, and then the
+# container user cannot write the bind-mounted repo. Scoped to devcontainer runs only, because
+# keep-id breaks images that start as root (postgres). Docker needs neither.
+if command -v podman >/dev/null; then
+  function devcontainer() {
+    case ${1:-} in
+      up|exec|build|set-up|run-user-commands|read-configuration)
+        PODMAN_USERNS=keep-id command devcontainer "$1" --docker-path podman "${@:2}" ;;
+      *) command devcontainer "$@" ;;
+    esac
+  }
+fi
+{{- end }}
 
 # --- Machine-local overrides (untracked) ---
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
