@@ -1,5 +1,5 @@
 #!/bin/sh
-# Devcontainer entry point. `devcontainer up --dotfiles-repository https://github.com/zsolt-98/dotfiles`
+# Devcontainer entry point. DevPod's dotfiles option (and the devcontainer CLI's --dotfiles-repository)
 # clones this repo to ~/dotfiles and runs this script. Applies without prompts: answers come from the
 # defaults in .chezmoi.toml.tmpl, and --force overwrites the image's own ~/.zshrc and friends.
 set -eu

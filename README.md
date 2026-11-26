@@ -75,13 +75,28 @@ List tag in `packages/dnf.txt`: `[nobrew]` installs only when Homebrew is missin
 
 ## Devcontainer
 
-Any devcontainer gets this environment through the devcontainer dotfiles mechanism:
+Any devcontainer gets this environment through [DevPod](https://devpod.sh)'s dotfiles option. One-time host setup: DevPod forwards the SSH agent, git and docker credentials and git SSH signing into every workspace by default, so turn those off, along with telemetry. On podman without the `podman-docker` shim, add the provider with `-o DOCKER_PATH=podman`.
 
 ```sh
-devcontainer up --workspace-folder . --dotfiles-repository https://github.com/zsolt-98/dotfiles
+devpod context set-options -o SSH_AGENT_FORWARDING=false -o SSH_ADD_PRIVATE_KEYS=false \
+  -o SSH_INJECT_GIT_CREDENTIALS=false -o SSH_INJECT_DOCKER_CREDENTIALS=false \
+  -o GIT_SSH_SIGNATURE_FORWARDING=false -o TELEMETRY=false \
+  -o DOTFILES_URL=https://github.com/zsolt-98/dotfiles \
+  -o SSH_CONFIG_PATH="$HOME/.devpod/ssh_config"
+devpod ide use none
+devpod provider add docker
 ```
 
-The CLI clones this repo to `~/dotfiles` inside the container and runs `install.sh`. That script installs chezmoi and applies without prompts: git name and email come from the defaults in `.chezmoi.toml.tmpl`, and `--force` replaces the image's own `~/.zshrc`. Rebuilds run it again from scratch, so mount volumes for anything that should survive one (the Claude config, `/home/linuxbrew`).
+Per project:
+
+```sh
+devpod up .
+devpod ssh .
+```
+
+`SSH_CONFIG_PATH` keeps the workspace SSH entries, which always set `ForwardAgent yes`, out of `~/.ssh/config`. Do not skip the entry with `--configure-ssh=false`: DevPod reads the container user from it and falls back to root.
+
+DevPod clones this repo to `~/dotfiles` inside the container and runs `install.sh`. That script installs chezmoi and applies without prompts: git name and email come from the defaults in `.chezmoi.toml.tmpl`, and `--force` replaces the image's own `~/.zshrc`. Rebuilds run it again from scratch, so mount volumes for anything that should survive one (the Claude config, `/home/linuxbrew`).
 
 Inside a container (Docker's `/.dockerenv` or podman's `/run/.containerenv`):
 
@@ -90,8 +105,6 @@ Inside a container (Docker's `/.dockerenv` or podman's `/run/.containerenv`):
 - Claude Code starts in auto permission mode.
 - zsh shows the hostname on the right of the prompt.
 - nvim yanks to the host clipboard over OSC 52. Paste host text with the terminal's paste key.
-
-On a host with podman, `.zshrc` wraps `devcontainer` to add `--docker-path podman` and `PODMAN_USERNS=keep-id`. Rootless podman otherwise maps the container user to a subuid, and that user cannot write the bind-mounted project.
 
 ## Theme
 
